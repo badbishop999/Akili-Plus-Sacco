@@ -1,0 +1,708 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKILIPLUS SACCO · Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --g1: #0d5c3e;
+            --g2: #1a8a61;
+            --g3: #25c17a;
+            --gold: #f0a500;
+            --slate: #0b2a1e;
+            --mid: #3d7a61;
+            --light: #8dbfa8;
+            --border: #cde8d9;
+            --white: #ffffff;
+            --bg-card: rgba(255,255,255,0.95);
+            --text-dark: #0f1f2e;
+            --text-muted: #5a6b7a;
+            --success: #22a356;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow: 0 8px 32px rgba(0,40,60,0.12);
+            --shadow-hover: 0 16px 48px rgba(0,50,70,0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d5c3e 0%, #0a3f2a 50%, #062b1f 100%);
+            background-attachment: fixed;
+            padding: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 1.5rem;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--g1), var(--g2));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 8px 20px rgba(13,92,62,0.3);
+        }
+
+        .sidebar-logo i {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .sidebar-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--slate);
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem 1rem;
+            border-radius: 14px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(13,92,62,0.08);
+            color: var(--g1);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--g1), var(--g2));
+            color: white;
+            box-shadow: 0 4px 15px rgba(13,92,62,0.3);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 0.85rem;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 14px;
+            color: var(--danger);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--slate);
+        }
+
+        .header-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--gold), #f5b800);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--g1);
+        }
+
+        .stat-card.members::before { background: linear-gradient(90deg, #22a356, #34c759); }
+        .stat-card.savings::before { background: linear-gradient(90deg, var(--g1), var(--g2)); }
+        .stat-card.loans::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .stat-card.revenue::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card.members .stat-icon {
+            background: rgba(34,163,86,0.15);
+            color: #22a356;
+        }
+
+        .stat-card.savings .stat-icon {
+            background: rgba(13,92,62,0.15);
+            color: var(--g1);
+        }
+
+        .stat-card.loans .stat-icon {
+            background: rgba(245,158,11,0.15);
+            color: #f59e0b;
+        }
+
+        .stat-card.revenue .stat-icon {
+            background: rgba(139,92,246,0.15);
+            color: #8b5cf6;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--slate);
+            font-family: 'Syne', sans-serif;
+            margin-top: 0.25rem;
+        }
+
+        .stat-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+        }
+
+        .stat-change.positive {
+            background: rgba(34,163,86,0.12);
+            color: #22a356;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+            }
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--slate);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card-title i {
+            color: var(--g1);
+        }
+
+        .card-action {
+            font-size: 0.85rem;
+            color: var(--g1);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .card-action:hover {
+            color: var(--gold);
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table td {
+            padding: 0.85rem 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .data-table tr:hover td {
+            background: rgba(13,92,62,0.03);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: rgba(34,163,86,0.12);
+            color: #22a356;
+        }
+
+        .status-badge.pending {
+            background: rgba(245,158,11,0.12);
+            color: #f59e0b;
+        }
+
+        .status-badge.completed {
+            background: rgba(13,92,62,0.12);
+            color: var(--g1);
+        }
+
+        /* Quick Actions */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.25rem 1rem;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+        }
+
+        .action-btn i {
+            font-size: 1.4rem;
+            color: var(--g1);
+            transition: all 0.25s ease;
+        }
+
+        .action-btn:hover {
+            background: white;
+            border-color: var(--g1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(13,92,62,0.15);
+        }
+
+        .action-btn:hover i {
+            color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        .dashboard-footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="sidebar-title">Akili Plus</div>
+                <div class="sidebar-subtitle">Admin Portal</div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-th-large"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        Members
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        Loans
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-piggy-bank"></i>
+                        Savings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        Contributions
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <a href="{% url 'index' %}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div>
+                    <h1 class="header-title">Admin Dashboard</h1>
+                    <p class="header-subtitle">Welcome back! Here's what's happening today.</p>
+                </div>
+                <div class="header-right">
+                    <div class="admin-avatar">
+                        {{ request.user.username|slice:":1"|upper }}
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card members">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-label">Total Members</div>
+                    <div class="stat-value">12,847</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> +12.5% this month
+                    </div>
+                </div>
+
+                <div class="stat-card savings">
+                    <div class="stat-icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div class="stat-label">Total Savings</div>
+                    <div class="stat-value">KSh 2.4B</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> +8.3% this month
+                    </div>
+                </div>
+
+                <div class="stat-card loans">
+                    <div class="stat-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="stat-label">Active Loans</div>
+                    <div class="stat-value">KSh 850M</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> +5.2% this month
+                    </div>
+                </div>
+
+                <div class="stat-card revenue">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-label">Revenue</div>
+                    <div class="stat-value">KSh 45.2M</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> +15% this month
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Recent Members -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-user-plus"></i> Recent Members
+                        </h3>
+                        <a href="#" class="card-action">View All</a>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Joined</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>Mar 8, 2026</td>
+                                <td>Regular</td>
+                                <td><span class="status-badge active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td>Mar 7, 2026</td>
+                                <td>Premium</td>
+                                <td><span class="status-badge active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>Michael Brown</td>
+                                <td>Mar 6, 2026</td>
+                                <td>Regular</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sarah Wilson</td>
+                                <td>Mar 5, 2026</td>
+                                <td>Regular</td>
+                                <td><span class="status-badge completed">Verified</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-bolt"></i> Quick Actions
+                        </h3>
+                    </div>
+                    <div class="actions-grid">
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-user-plus"></i>
+                            Add Member
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            Process Loan
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-download"></i>
+                            Export Report
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-bell"></i>
+                            Send Notice
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="dashboard-footer">
+                &copy; 2026 Akili Plus Sacco · Admin Dashboard · SASRA Licensed
+            </footer>
+        </main>
+    </div>
+</body>
+</html>
+

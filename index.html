@@ -1,0 +1,645 @@
+{% load static %}
+{% url 'index' as index_url %}
+{% url 'user_login' as user_login_url %}
+{% url 'admin_login' as admin_login_url %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akili Plus Sacco · Your Trusted Financial Partner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --g1:#0d5c3e;--g2:#1a8a61;--g3:#25c17a;
+  --gold:#f0a500;--slate:#0b2a1e;--mid:#3d7a61;--light:#8dbfa8;
+  --border:#cde8d9;--white:#ffffff;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#fff;color:var(--slate);overflow-x:hidden}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 5%;
+  background:rgba(255,255,255,.82);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,.35);
+  box-shadow:0 10px 30px rgba(0,0,0,.12);
+  transition:padding .25s ease, box-shadow .25s ease, background .25s ease;
+}
+nav.scrolled{
+  padding:.6rem 5%;
+  background:rgba(255,255,255,.88);
+  box-shadow:0 18px 40px rgba(0,0,0,.18);
+}
+.nav-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.nav-logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--g1),var(--g3));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(13,92,62,.3);}
+.nav-logo i{color:#fff;font-size:1rem;}
+.brand-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--slate);letter-spacing:-.01em;}
+.brand-name span{color:var(--g2);}
+.nav-links{display:flex;align-items:center;gap:.15rem;}
+.nav-links a{position:relative;font-size:.82rem;font-weight:500;color:var(--mid);text-decoration:none;padding:.4rem .82rem;border-radius:8px;transition:color .18s;font-family:'DM Sans',sans-serif;}
+.nav-links a::after{content:'';position:absolute;left:50%;bottom:6px;width:0;height:2px;background:var(--g2);border-radius:999px;transition:width .24s ease,left .24s ease;}
+.nav-links a:hover{color:var(--g2);}
+.nav-links a:hover::after,
+.nav-links a.active::after{width:100%;left:0;}
+.nav-toggle{
+  display:none;
+  width:38px;height:38px;
+  border:none;background:transparent;
+  cursor:pointer;position:relative;
+  z-index:210;
+}
+.nav-toggle-icon,
+.nav-toggle-icon::before,
+.nav-toggle-icon::after{
+  content:'';display:block;
+  width:20px;height:2px;
+  background:var(--slate);
+  border-radius:999px;
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  transition:transform .25s ease,opacity .25s ease;
+}
+.nav-toggle-icon::before{transform:translate(-50%,-8px);}
+.nav-toggle-icon::after{transform:translate(-50%,8px);}
+nav.open .nav-toggle-icon{background:transparent;}
+nav.open .nav-toggle-icon::before{transform:translate(-50%,0) rotate(45deg);}
+nav.open .nav-toggle-icon::after{transform:translate(-50%,0) rotate(-45deg);}
+.nav-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:.42rem 1.1rem;border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;
+  text-decoration:none;transition:transform .25s ease,box-shadow .25s ease,background .25s ease;margin-left:.3rem;
+}
+.pill-member{background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;box-shadow:0 4px 14px rgba(26,138,97,.3);}
+.pill-member:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 16px 28px rgba(26,138,97,.32);}
+.pill-admin{background:#fff;color:var(--g1);border:2px solid var(--border);}
+.pill-admin:hover{border-color:var(--g2);background:#f0f9f4;transform:translateY(-2px) scale(1.02);box-shadow:0 14px 26px rgba(0,0,0,.12);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  position:relative;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;
+  padding-top:68px;
+  overflow:hidden;
+}
+/* HERO background — left half white, right half image */
+.hero-bg-img{
+  position:absolute;top:0;right:0;width:50%;height:100%;
+  overflow:hidden;
+  z-index:0;
+}
+.hero-bg-img img{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;object-fit:cover;object-position:center;
+  filter:brightness(.72) saturate(1.15);
+  animation:imgZoom 22s ease-in-out infinite alternate;
+}
+@keyframes imgZoom{from{transform:scale(1)}to{transform:scale(1.07)}}
+.hero-bg-img::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to right,rgba(255,255,255,.35) 0%,transparent 30%),
+             linear-gradient(to top,rgba(13,92,62,.4) 0%,transparent 50%);
+}
+
+.hero-left{
+  position:relative;z-index:2;
+  padding:4rem 4% 4rem 6%;
+  animation:fadeLeft .8s .1s both;
+}
+@keyframes fadeLeft{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:translateX(0)}}
+
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(90deg,#e6f9f0,#d0f0e2);color:var(--g2);
+  border:1px solid #b0e0c8;padding:.32rem 1rem;border-radius:30px;
+  font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:1.6rem;
+}
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.8rem,5vw,4.2rem);font-weight:700;
+  line-height:1.06;color:var(--slate);margin-bottom:1.3rem;
+  letter-spacing:-.02em;
+}
+h1 em{color:var(--g2);font-style:italic;}
+h1 .gold-text{color:var(--gold);font-style:normal;}
+.hero-desc{
+  font-family:'DM Sans',sans-serif;font-size:1rem;
+  color:#4a7a65;line-height:1.78;max-width:450px;margin-bottom:2.4rem;
+}
+.hero-btns{display:flex;gap:.85rem;flex-wrap:wrap;margin-bottom:2.8rem;}
+.btn-primary{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--g2),var(--g3));
+  color:#fff;border:none;padding:.95rem 2.2rem;border-radius:16px;
+  font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:800;
+  cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+  box-shadow:0 10px 22px rgba(13,92,62,.22);
+  transition:transform .25s ease,box-shadow .25s ease,background .35s ease;
+  text-decoration:none;
+}
+.btn-primary::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 30% 45%,rgba(240,165,0,.24),transparent 60%);
+  filter:blur(8px);
+  opacity:0;
+  transition:opacity .35s ease,transform .35s ease;
+  transform:scale(1);
+}
+.btn-primary:hover{transform:translateY(-2px) scale(1.02);background:linear-gradient(135deg,var(--gold),#f59f00);box-shadow:0 0 0 2px rgba(240,165,0,.28),0 14px 38px rgba(240,165,0,.4);}
+.btn-primary:hover::after{opacity:.75;transform:scale(1.04);}
+.btn-primary:focus-visible{outline:3px solid rgba(240,165,0,.55);outline-offset:4px;}
+
+.btn-outline{
+  position:relative;overflow:hidden;
+  background:rgba(37,193,122,.1);
+  color:var(--g1);border:2px solid rgba(37,193,122,.35);
+  padding:.95rem 2.2rem;border-radius:16px;
+  font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:800;
+  cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+  box-shadow:0 10px 30px rgba(37,193,122,.15);
+  transition:transform .25s ease,box-shadow .25s ease,background .25s ease,border-color .25s ease;
+  text-decoration:none;
+}
+.btn-outline::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 70% 30%,rgba(37,193,122,.22),transparent 60%);
+  opacity:0;transform:scale(0.85);
+  transition:opacity .35s ease,transform .35s ease;
+}
+.btn-outline:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 18px 42px rgba(37,193,122,.26);border-color:rgba(37,193,122,.7);background:rgba(37,193,122,.16);}
+.btn-outline:hover::after{opacity:1;transform:scale(1.1);}
+.btn-outline:focus-visible{outline:3px solid rgba(37,193,122,.55);outline-offset:4px;}
+
+.trust-row{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:.73rem;font-weight:600;color:var(--mid);}
+.trust-item i{color:var(--g3);}
+.trust-sep{width:1px;height:14px;background:var(--border);}
+
+/* Floating stat cards on hero right */
+.hero-right{position:relative;z-index:2;height:100vh;}
+.stat-card{
+  position:absolute;z-index:3;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(14px);
+  border-radius:18px;padding:1.1rem 1.4rem;
+  box-shadow:0 16px 40px rgba(0,0,0,.18);min-width:148px;
+}
+.stat-card .sc-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--g2),var(--g3));display:flex;align-items:center;justify-content:center;margin-bottom:.5rem;box-shadow:0 4px 10px rgba(26,138,97,.28);}
+.stat-card .sc-icon i{color:#fff;font-size:.9rem;}
+.stat-card .sc-num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--g2);line-height:1;}
+.stat-card .sc-lbl{font-size:.64rem;font-weight:600;color:var(--light);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
+.sc1{bottom:16%;left:-28px;animation:float1 5s ease-in-out infinite alternate;}
+.sc2{top:20%;right:6%;animation:float2 6s ease-in-out infinite alternate;}
+.sc3{bottom:34%;right:5%;animation:float1 4.5s 1s ease-in-out infinite alternate;}
+@keyframes float1{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+@keyframes float2{from{transform:translateY(0)}to{transform:translateY(-9px)}}
+
+/* ── STATS BAND ── */
+.stats-band{
+  background:linear-gradient(135deg,var(--g1) 0%,#0a3f2a 100%);
+  padding:3.2rem 6%;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;
+  position:relative;overflow:hidden;
+}
+.stats-band::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:280px;height:280px;border-radius:50%;
+  background:rgba(37,193,122,.08);pointer-events:none;
+}
+.stat-item{text-align:center;}
+.stat-item .big{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;color:var(--g3);line-height:1;}
+.stat-item .big span{color:var(--gold);}
+.stat-item .lbl{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.48);text-transform:uppercase;letter-spacing:.07em;margin-top:.4rem;}
+
+/* ── FEATURES SECTION ── */
+.features-section{padding:5.5rem 6%;background:#fff;}
+.section-kicker{display:inline-flex;align-items:center;gap:6px;background:#f0faf5;color:var(--g2);padding:.28rem .9rem;border-radius:30px;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1rem;}
+.section-h{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.9rem,3.2vw,2.8rem);font-weight:700;
+  color:var(--slate);margin-bottom:.65rem;max-width:520px;line-height:1.15;
+}
+.section-h em{font-style:italic;color:var(--g2);}
+.section-sub{font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--mid);max-width:520px;line-height:1.75;margin-bottom:3rem;}
+
+/* Feature cards with images */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.4rem;}
+.feat-card{
+  background:#fff;border:1.5px solid #e4ede8;border-radius:20px;
+  overflow:hidden;transition:all .28s;cursor:default;
+  box-shadow:0 2px 12px rgba(0,40,20,.05);
+}
+.feat-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(13,92,62,.14);border-color:var(--g3);}
+.feat-card-img{
+  width:100%;height:170px;overflow:hidden;position:relative;
+}
+.feat-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease;}
+.feat-card:hover .feat-card-img img{transform:scale(1.08);}
+.feat-card-img::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 40%,rgba(13,92,62,.4) 100%);
+}
+.feat-card-body{padding:1.3rem 1.4rem 1.5rem;}
+.feat-ico-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.8rem;}
+.feat-ico{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--g2),var(--g3));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(26,138,97,.24);flex-shrink:0;}
+.feat-ico i{color:#fff;font-size:.9rem;}
+.feat-card h3{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--slate);margin-bottom:.4rem;}
+.feat-card p{font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--mid);line-height:1.65;}
+
+/* ── SPLIT SECTION ── */
+.split-section{
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:stretch;overflow:hidden;
+}
+.split-img{position:relative;min-height:540px;overflow:hidden;}
+.split-img img{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;object-fit:cover;
+  filter:brightness(.85) saturate(1.1);
+  opacity:0;
+  transform:scale(1.04) rotate(0deg);
+  transition:opacity 1.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 1.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  z-index:0;
+}
+.split-img img.active{
+  opacity:1;
+  transform:scale(1.1) rotate(2deg);
+  z-index:2;
+}
+.split-img img.slide-exit{
+  opacity:0;
+  transform:scale(0.95) rotate(-4deg);
+  z-index:1;
+}
+.split-img::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,92,62,.38),transparent 60%);}
+.split-text{padding:4.5rem 6%;background:#f7fcf9;display:flex;flex-direction:column;justify-content:center;}
+.split-text h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.7rem,2.8vw,2.2rem);font-weight:700;color:var(--slate);margin-bottom:1rem;line-height:1.2;}
+.split-text p{font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--mid);line-height:1.78;margin-bottom:1.6rem;max-width:420px;}
+.check-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:2rem;}
+.check-item{display:flex;align-items:center;gap:.65rem;font-family:'DM Sans',sans-serif;font-size:.83rem;font-weight:500;color:var(--slate);}
+.check-item i{color:var(--g3);font-size:.9rem;flex-shrink:0;}
+
+/* ── CTA ── */
+.cta-section{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#f0faf5,#e4f5ec);
+  border-top:1.5px solid #cde8d9;border-bottom:1.5px solid #cde8d9;
+  padding:4.5rem 6%;
+  display:grid;grid-template-columns:1.05fr .9fr;gap:2.2rem;align-items:center;
+}
+.cta-section::before{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:260px;height:260px;border-radius:50%;
+  background:rgba(37,193,122,.09);pointer-events:none;
+}
+.cta-left{display:flex;flex-direction:column;gap:1.2rem;}
+.cta-left .section-kicker{margin-bottom:.4rem;}
+.cta-left h2{font-family:'Cormorant Garamond',serif;font-size:2.05rem;color:var(--slate);max-width:520px;line-height:1.22;}
+.cta-left h2 em{color:var(--g2);}
+.cta-left p{font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--mid);max-width:520px;line-height:1.72;}
+.cta-features{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:.9rem;margin-top:.8rem;list-style:none;padding:0;}
+.cta-features li{display:flex;align-items:flex-start;gap:.5rem;font-family:'DM Sans',sans-serif;font-size:.82rem;color:var(--mid);}
+.cta-features li i{color:var(--g3);margin-top:2px;}
+
+.cta-right{position:relative;z-index:1;}
+.cta-card{
+  background:#fff;
+  border:1px solid rgba(13,92,62,.12);
+  border-radius:20px;
+  padding:2.2rem 2rem;
+  box-shadow:0 18px 44px rgba(13,92,62,.08);
+}
+.cta-card h3{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:var(--slate);margin-bottom:.55rem;}
+.cta-card p{font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--mid);line-height:1.65;margin-bottom:1.6rem;}
+.cta-card .cta-btns{display:flex;gap:.85rem;flex-wrap:wrap;}
+.cta-trust{display:flex;align-items:center;gap:.65rem;font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--mid);margin-top:1.2rem;}
+.cta-trust i{color:var(--g3);}
+.cta-btns{display:flex;gap:.9rem;flex-wrap:wrap;flex-shrink:0;}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--slate);padding:2.5rem 6%;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.foot-brand{display:flex;align-items:center;gap:.65rem;}
+.foot-brand-name{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:#fff;}
+.foot-brand-name span{color:var(--g3);}
+footer p{font-family:'DM Sans',sans-serif;font-size:.71rem;color:rgba(255,255,255,.32);font-weight:400;}
+.foot-links{display:flex;gap:1.4rem;}
+.foot-links a{font-family:'DM Sans',sans-serif;font-size:.71rem;font-weight:600;color:rgba(255,255,255,.45);text-decoration:none;transition:color .15s;}
+.foot-links a:hover{color:var(--g3);}
+
+/* scroll reveal */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding-top:68px;}
+  .hero-bg-img{width:100%;height:55vw;top:auto;bottom:0;}
+  .hero-right{height:55vw;min-height:240px;}
+  .hero-left{padding:3rem 5% 2rem;}
+  .sc1{left:4%;}
+  .stats-band{grid-template-columns:repeat(2,1fr);}
+  .split-section{grid-template-columns:1fr;}
+  .split-img{min-height:52vw;}
+  nav{padding:.8rem 4%;}
+  .nav-toggle{display:block;}
+  .nav-links{
+    position:fixed;top:68px;right:0;
+    width:260px;height:calc(100vh - 68px);
+    flex-direction:column;
+    gap:.6rem;
+    padding:1.4rem 1.2rem;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(20px);
+    box-shadow:-6px 0 36px rgba(0,0,0,.12);
+    transform:translateX(100%);
+    transition:transform .25s ease;
+    z-index:190;
+  }
+  .nav-links a{display:block;width:100%;margin-bottom:.9rem;}
+  .nav-links a:last-child{margin-bottom:0;}
+  nav.open .nav-links{transform:translateX(0);}
+  .cta-section{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="{{ index_url }}" class="nav-brand">
+    <div class="nav-logo"><i class="fas fa-leaf"></i></div>
+    <span class="brand-name">Akili Plus <span>Sacco</span></span>
+  </a>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+    <span class="nav-toggle-icon"></span>
+  </button>
+  <div class="nav-links">
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Contact</a>
+    <a href="{{ user_login_url }}" class="nav-pill pill-member {% if request.path == user_login_url %}active{% endif %}"><i class="fas fa-user"></i> Member Portal</a>
+    <a href="{{ admin_login_url }}" class="nav-pill pill-admin {% if request.path == admin_login_url %}active{% endif %}"><i class="fas fa-shield-alt"></i> Admin Portal</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- Background image fills right half -->
+  <div class="hero-bg-img">
+    <img src="{% static 'images/images/steptodown.com599974.jpg' %}" alt="Grow your wealth with Akili Plus Sacco" loading="eager">
+  </div>
+
+
+  <div class="hero-left">
+    <div class="hero-kicker"><i class="fas fa-leaf"></i> Trusted · Community · Growth</div>
+    <h1>Banking <em>Smarter,</em><br>Growing <span class="gold-text">Together</span></h1>
+    <p class="hero-desc">Akili Plus Sacco empowers you with competitive savings, fast affordable loans, and a secure digital banking experience built on trust and community.</p>
+    <div class="hero-btns">
+      <a href="{% url 'user_login' %}" class="btn-primary"><i class="fas fa-user"></i> Member Login</a>
+      <a href="{% url 'admin_login' %}" class="btn-outline"><i class="fas fa-shield-alt"></i> Admin Portal</a>
+    </div>
+    <div class="trust-row">
+      <div class="trust-item"><i class="fas fa-check-circle"></i> SASRA Regulated</div>
+      <div class="trust-sep"></div>
+      <div class="trust-item"><i class="fas fa-lock"></i> 256-bit Encrypted</div>
+      <div class="trust-sep"></div>
+      <div class="trust-item"><i class="fas fa-star"></i> 4.9 / 5 Rating</div>
+    </div>
+  </div>
+
+  <!-- Floating stat cards overlay right side -->
+  <div class="hero-right">
+    <div class="stat-card sc1">
+      <div class="sc-icon"><i class="fas fa-users"></i></div>
+      <div class="sc-num">12K+</div>
+      <div class="sc-lbl">Active Members</div>
+    </div>
+    <div class="stat-card sc2">
+      <div class="sc-icon"><i class="fas fa-chart-line"></i></div>
+      <div class="sc-num">98%</div>
+      <div class="sc-lbl">Satisfaction</div>
+    </div>
+    <div class="stat-card sc3">
+      <div class="sc-icon"><i class="fas fa-piggy-bank"></i></div>
+      <div class="sc-num">KSh 2B</div>
+      <div class="sc-lbl">Total Savings</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAND -->
+<div class="stats-band">
+  <div class="stat-item reveal"><div class="big">12<span>K+</span></div><div class="lbl">Active Members</div></div>
+  <div class="stat-item reveal" style="transition-delay:.1s"><div class="big" style="color:var(--gold)">KSh 2B</div><div class="lbl">Total Savings</div></div>
+  <div class="stat-item reveal" style="transition-delay:.2s"><div class="big">98<span>%</span></div><div class="lbl">Loan Satisfaction</div></div>
+  <div class="stat-item reveal" style="transition-delay:.3s"><div class="big">15<span>+</span></div><div class="lbl">Years of Service</div></div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="section-kicker reveal"><i class="fas fa-star"></i> Why Choose Us</div>
+  <h2 class="section-h reveal">Everything you need to<br><em>grow your finances</em></h2>
+  <p class="section-sub reveal">From savings to loans and digital tools — a complete financial ecosystem built for every member.</p>
+
+  <div class="feat-grid">
+    <!-- Smart Savings -->
+    <div class="feat-card reveal">
+      <div class="feat-card-img">
+        <img src="{% static 'images/images/steptodown.com880034.jpg' %}" alt="Smart Savings — growing money" loading="lazy">
+      </div>
+
+      <div class="feat-card-body">
+        <div class="feat-ico-row">
+          <div class="feat-ico"><i class="fas fa-piggy-bank"></i></div>
+          <h3>Smart Savings</h3>
+        </div>
+        <p>Earn competitive interest on deposits with flexible plans. Your money works hard even while you rest.</p>
+      </div>
+    </div>
+    <!-- Easy Loans -->
+    <div class="feat-card reveal" style="transition-delay:.1s">
+      <div class="feat-card-img">
+        <img src="{% static 'images/images/steptodown.com269261.jpg' %}" alt="Easy Loans — loan consultation" loading="lazy">
+      </div>
+      <div class="feat-card-body">
+        <div class="feat-ico-row">
+          <div class="feat-ico"><i class="fas fa-hand-holding-usd"></i></div>
+          <h3>Easy Loans</h3>
+        </div>
+        <p>Access affordable credit in days with streamlined applications and fair, transparent rates.</p>
+      </div>
+    </div>
+    <!-- Digital Banking -->
+    <div class="feat-card reveal" style="transition-delay:.2s">
+      <div class="feat-card-img">
+        <img src="{% static 'images/images/steptodown.com290994.jpg' %}" alt="Digital Banking — members using app" loading="lazy">
+      </div>
+      <div class="feat-card-body">
+        <div class="feat-ico-row">
+          <div class="feat-ico"><i class="fas fa-mobile-alt"></i></div>
+          <h3>Digital Banking</h3>
+        </div>
+        <p>Manage everything from your phone — balances, payments, and transaction history anytime.</p>
+      </div>
+    </div>
+    <!-- Bank-Grade Security -->
+    <div class="feat-card reveal" style="transition-delay:.3s">
+      <div class="feat-card-img">
+        <img src="{% static 'images/images/steptodown.com359850.jpg' %}" alt="Bank-Grade Security — digital analytics" loading="lazy">
+      </div>
+      <div class="feat-card-body">
+        <div class="feat-ico-row">
+          <div class="feat-ico"><i class="fas fa-lock"></i></div>
+          <h3>Bank-Grade Security</h3>
+        </div>
+        <p>256-bit encryption, multi-factor authentication, and real-time fraud detection on every account.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT: Member using app + text -->
+<div class="split-section">
+  <div class="split-img reveal" id="splitCarousel">
+    <img class="active" src="{% static 'images/images/smartphone.jpg' %}" alt="Mobile banking interface" loading="lazy">
+    <img src="{% static 'images/images/securetransaction.jpg' %}" alt="Secure transaction on mobile" loading="lazy">
+    <img src="{% static 'images/images/steptodown.com290994.jpg' %}" alt="Digital banking dashboard" loading="lazy">
+        <img src="{% static 'images/images/emailmessage.jpg' %}" alt="Digital banking dashboard" loading="lazy">
+
+  </div>
+  <div class="split-text reveal" style="transition-delay:.15s">
+    <div class="section-kicker"><i class="fas fa-mobile-alt"></i> Digital First</div>
+    <h2>Banking at your<br>fingertips, 24/7</h2>
+    <p>Our secure online platform gives you full control of your finances whenever and wherever you need it — no queues, no paperwork, no hassle.</p>
+    <div class="check-list">
+      <div class="check-item"><i class="fas fa-check-circle"></i> View balances and transaction history in real time</div>
+      <div class="check-item"><i class="fas fa-check-circle"></i> Apply for loans and track approval status online</div>
+      <div class="check-item"><i class="fas fa-check-circle"></i> Receive digital statements directly to your email</div>
+      <div class="check-item"><i class="fas fa-check-circle"></i> Two-factor authentication for extra account security</div>
+    </div>
+    <a href="{% url 'user_login' %}" class="btn-primary"><i class="fas fa-sign-in-alt"></i> Access Your Account</a>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-left">
+    <div class="section-kicker reveal"><i class="fas fa-user-plus"></i> Ready when you are</div>
+    <h2 class="reveal">Make your money work harder<br><em>without the hassle.</em></h2>
+    <p class="reveal">Join a community-backed savings cooperative that keeps your funds safe, accessible, and growing — with the flexibility you need for life today.</p>
+    <ul class="cta-features reveal">
+      <li><i class="fas fa-check-circle"></i> Fast account setup & instant access</li>
+      <li><i class="fas fa-shield-alt"></i> Secure, encrypted transactions</li>
+      <li><i class="fas fa-chart-line"></i> Competitive returns with low fees</li>
+      <li><i class="fas fa-headset"></i> 24/7 support when you need it</li>
+    </ul>
+  </div>
+  <div class="cta-right reveal">
+    <div class="cta-card">
+      <h3>Start your journey</h3>
+      <p>Sign in now to manage savings, apply for loans, and track everything from your phone — all in one place.</p>
+      <div class="cta-btns">
+        <a href="{% url 'user_login' %}" class="btn-primary"><i class="fas fa-user-plus"></i> Get Started</a>
+        <a href="{% url 'admin_login' %}" class="btn-outline"><i class="fas fa-shield-alt"></i> Admin Access</a>
+      </div>
+      <div class="cta-trust"><i class="fas fa-check-circle"></i> Trusted by thousands of members</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-brand">
+    <div class="nav-logo" style="width:32px;height:32px;"><i class="fas fa-leaf" style="font-size:.85rem;color:#fff"></i></div>
+    <span class="foot-brand-name">Akili Plus <span>Sacco</span></span>
+  </div>
+  <p>&copy; 2025 Akili Plus Sacco · All rights reserved · SASRA Licensed</p>
+  <div class="foot-links">
+    <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Split-section carousel (auto-rotating images)
+(function(){
+  const carousel = document.getElementById('splitCarousel');
+  if (!carousel) return;
+  const slides = Array.from(carousel.querySelectorAll('img'));
+  let idx = 0;
+
+  function showSlide(i){
+    slides.forEach((img, j) => {
+      if (j === i) {
+        img.classList.add('active');
+        img.classList.remove('slide-exit');
+      } else if (img.classList.contains('active')) {
+        img.classList.add('slide-exit');
+        img.classList.remove('active');
+      } else {
+        img.classList.remove('slide-exit');
+      }
+    });
+  }
+
+  function nextSlide(){
+    const current = idx;
+    idx = (idx + 1) % slides.length;
+    showSlide(idx);
+    // Clean up exit class after transition
+    setTimeout(() => {
+      slides[current].classList.remove('slide-exit');
+    }, 1600);
+  }
+
+  // Start auto-rotation (every 5s)
+  setInterval(nextSlide, 5000);
+})();
+
+// Sticky nav shrink on scroll
+(function(){
+  const nav = document.querySelector('nav');
+  if (!nav) return;
+  const threshold = 60;
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > threshold);
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+
+// Mobile nav toggle
+(function(){
+  const nav = document.querySelector('nav');
+  const toggle = document.querySelector('.nav-toggle');
+  const links = nav?.querySelector('.nav-links');
+  if (!nav || !toggle || !links) return;
+
+  const setExpanded = (isOpen) => {
+    nav.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', isOpen);
+  };
+
+  toggle.addEventListener('click', () => setExpanded(!nav.classList.contains('open')));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setExpanded(false)));
+  document.addEventListener('click', (event) => {
+    if (!nav.contains(event.target)) setExpanded(false);
+  });
+})();
+</script>
+</body>
+</html>

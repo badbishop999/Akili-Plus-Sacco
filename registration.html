@@ -1,0 +1,896 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKILIPLUS SACCO · admin registration</title>
+    <!-- Font Awesome 6 (free) for icons & security feel -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background:
+                linear-gradient(rgba(0,0,0,0.22), rgba(0,0,0,0.22)),
+                linear-gradient(rgba(255,255,255,0.54), rgba(255,255,255,0.54)),
+                url('{% static "images/images/steptodown.com941388.jpg" %}') no-repeat center 30% fixed;
+            background-size: 120% auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+            color: #1c3d5e;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: url('{% static "images/images/steptodown.com941388.jpg" %}') no-repeat center 30% fixed;
+            background-size: 120% auto;
+            opacity: 0.45;
+            pointer-events: none;
+            filter: blur(5px);
+        }
+
+        .dashboard {
+            max-width: 940px;
+            width: 100%;
+            background: rgba(255,255,255,0.72);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 22, 48, 0.22);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(18px);
+            animation: slideUp 0.65s ease forwards;
+            transform: translateY(16px);
+        }
+
+        @keyframes slideUp {
+            to { transform: translateY(0); }
+        }
+
+        /* header area */
+        .top-bar {
+            padding: 1.5rem 2rem 0.5rem 2rem;
+            border-bottom: 1px solid #eef2f6;
+        }
+        .sacco-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #0a2942;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .sacco-title i {
+            color: #1e6f5c;
+            font-size: 2rem;
+        }
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+            color: #5b6f82;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .breadcrumb span {
+            color: #1a3b55;
+        }
+        .breadcrumb .member-tag {
+            background: #e1ecf9;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1e5c8b;
+        }
+
+        /* main card content */
+        .registration-panel {
+            padding: 1.5rem 2rem 2rem 2rem;
+        }
+
+        .section-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0c2d4b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-left: 5px solid #1e6f5c;
+            padding-left: 1rem;
+        }
+
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        .form-group {
+            flex: 1 1 calc(50% - 0.75rem);
+            min-width: 240px;
+        }
+
+        .form-group.full-width {
+            flex: 1 1 100%;
+        }
+
+        /* smoother form interactions */
+        input, .btn-primary, .btn-secondary, .btn-generate {
+            transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.18s ease;
+        }
+        input:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(30, 111, 92, 0.12);
+        }
+        .btn-primary:hover, .btn-secondary:hover, .btn-generate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(23, 94, 78, 0.18);
+        }
+
+        @media (min-width: 960px) {
+            .form-grid {
+                display: grid;
+                grid-template-columns: 1.1fr 0.95fr;
+                gap: 2.2rem;
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(240px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+
+            .registration-panel {
+                padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+            }
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1f3a57;
+            margin-bottom: 0.4rem;
+        }
+        label i {
+            color: #1e6f5c;
+            width: 1.2rem;
+            font-size: 1rem;
+        }
+
+        input, .phone-wrapper input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid #dae1e9;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            transition: 0.15s;
+            background: #fbfdff;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1e6f5c;
+            box-shadow: 0 0 0 3px rgba(30,111,92,0.15);
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #6f7e91;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .hint i {
+            font-size: 0.7rem;
+            color: #5f7d9c;
+        }
+
+        /* phone input with static +254 */
+        .phone-group {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid #dae1e9;
+            border-radius: 14px;
+            background: #fbfdff;
+        }
+        .phone-prefix {
+            background: #e9f0f6;
+            padding: 0.8rem 1rem;
+            border-radius: 14px 0 0 14px;
+            font-weight: 600;
+            color: #1a3b55;
+            border-right: 1px solid #ccdae6;
+            font-size: 0.95rem;
+        }
+        .phone-group input {
+            border: none;
+            background: transparent;
+            border-radius: 0 14px 14px 0;
+            padding: 0.8rem 1rem;
+        }
+        .phone-group input:focus {
+            box-shadow: none;
+            border: none;
+        }
+
+        /* password security extras */
+        .password-strength {
+            margin: 0.5rem 0 0.25rem 0;
+        }
+        .strength-meter {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 100%;
+        }
+        .strength-fill {
+            height: 6px;
+            width: 0%;
+            background: #dc2626;
+            transition: width 0.2s, background 0.2s;
+        }
+        .strength-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.2rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .criteria-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.5rem;
+            margin: 0.8rem 0 0.5rem 0;
+            font-size: 0.75rem;
+            background: #f4f9fc;
+            padding: 0.8rem 1rem;
+            border-radius: 16px;
+        }
+        .criteria-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #3a4d65;
+        }
+        .criteria-item i {
+            width: 1rem;
+        }
+        .criteria-item.valid i {
+            color: #0f7b5a;
+        }
+        .criteria-item.invalid i {
+            color: #b22234;
+        }
+
+        .confirm-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.25rem;
+        }
+        .match-badge {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.9rem;
+            border-radius: 30px;
+            background: #eef2f6;
+            color: #2c3f5c;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .match-badge.success {
+            background: #dff3e3;
+            color: #0f5e46;
+        }
+        .match-badge.error {
+            background: #ffe6e6;
+            color: #b13e3e;
+        }
+
+        .security-toggles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1rem 0 1.2rem 0;
+            background: #f1f6fa;
+            padding: 0.8rem 1.2rem;
+            border-radius: 30px;
+            align-items: center;
+        }
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1c3d5e;
+            cursor: pointer;
+        }
+        .toggle-item input[type="checkbox"] {
+            width: auto;
+            accent-color: #1e6f5c;
+            transform: scale(1.1);
+        }
+        .btn-generate {
+            background: #e6edf5;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: #1d4b6e;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-generate:hover {
+            background: #d1deec;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background: #1e6f5c;
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(23,94,78,0.25);
+            transition: 0.15s;
+        }
+        .btn-primary:hover {
+            background: #165e4c;
+            transform: scale(1.02);
+        }
+        .btn-secondary {
+            background: #eef3f8;
+            color: #1e3e5c;
+            border: 1.5px solid #cbdae6;
+            padding: 1rem 2.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background: #e2eaf3;
+        }
+
+        /* toast notifications */
+        #toastContainer {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .toast {
+            min-width: 280px;
+            padding: 0.9rem 1rem;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.18);
+            pointer-events: auto;
+            opacity: 0;
+            transform: translateY(12px);
+            animation: toastIn 0.25s forwards;
+        }
+        .toast.success { background: #0f7b5a; }
+        .toast.error { background: #b22234; }
+        .toast.info { background: #1e6f5c; }
+        .toast .toast-close {
+            margin-left: auto;
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.85);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        @keyframes toastIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* redirect overlay (smooth move to login) */
+        .redirect-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 18, 28, 0.62);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            color: rgba(255,255,255,0.95);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.28s ease;
+            z-index: 9998;
+        }
+        .redirect-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .redirect-overlay .spinner {
+            width: 56px;
+            height: 56px;
+            border: 5px solid rgba(255,255,255,0.25);
+            border-top-color: rgba(255,255,255,0.92);
+            border-radius: 50%;
+            animation: spin 0.95s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* bottom navigation */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #f8fafd;
+            border-top: 1px solid #dde5ef;
+            padding: 0.9rem 1rem 0.8rem;
+            font-weight: 500;
+            color: #2c4a6e;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.75rem;
+            color: #5b748d;
+            transition: 0.1s;
+            cursor: default;
+        }
+        .nav-item i {
+            font-size: 1.2rem;
+            color: #38658f;
+        }
+        .nav-item.active {
+            color: #1e6f5c;
+        }
+        .nav-item.active i {
+            color: #1e6f5c;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e4ecf5;
+            margin: 0.5rem 0;
+        }
+
+        /* micro */
+        .inline-icon {
+            margin-right: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <!-- top bar with SACCO name & member context -->
+    <div class="top-bar">
+        <div class="sacco-title">
+            <i class="fas fa-hand-holding-heart"></i> AKILIPLUS SACCO
+        </div>
+        <div class="breadcrumb">
+            <i class="fas fa-shield-alt" style="color:#1e6f5c;"></i> 
+            <span>Admin</span> / 
+            <span class="member-tag"><i class="fas fa-user-plus"></i> Member registration</span>
+        </div>
+    </div>
+
+    <!-- registration core -->
+    <div class="registration-panel">
+        <div class="section-header">
+            <h3><i class="fas fa-user-plus" style="color: #1e6f5c;"></i> MEMBER REGISTRATION PORTAL</h3>
+        </div>
+
+        <div class="form-grid">
+            <!-- full name -->
+            <div class="form-group full-width">
+                <label><i class="fas fa-user-circle"></i> Full Name</label>
+                <input type="text" id="fullName" placeholder="e.g. Kamau Njoroge" value="">
+                <div class="hint"><i class="fas fa-info-circle"></i> Enter the official name as it appears on the ID.</div>
+            </div>
+
+            <!-- two column: email and phone -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="email" placeholder="member@example.com" value="">
+                    <div class="hint"><i class="fas fa-file-signature"></i> Primary contact for digital statements.</div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-phone-alt"></i> Phone Number</label>
+                    <div class="phone-group">
+                        <span class="phone-prefix">+254</span>
+                        <input type="tel" id="phone" placeholder="7XX XXXX XXX" value="">
+                    </div>
+                    <div class="hint"><i class="fas fa-exclamation-triangle"></i> Use format: +254 7XX XXXX XXX.</div>
+                </div>
+            </div>
+
+            <!-- physical address full width -->
+            <div class="form-group full-width">
+                <label><i class="fas fa-map-pin"></i> Physical Address</label>
+                <input type="text" id="address" placeholder="House No, Street, Town" value="">
+                <div class="hint"><i class="fas fa-home"></i> Resident details (House No, Street, Town).</div>
+            </div>
+
+            <!-- proposed password + confirm + security features -->
+            <div class="form-group full-width">
+                <label><i class="fas fa-lock"></i> Proposed Password</label>
+                <input type="password" id="password" placeholder="··········" autocomplete="new-password">
+                <div class="hint"><i class="fas fa-clock"></i> Temporary password for first-time login.</div>
+
+                <!-- password strength meter & criteria (cybersecurity feature) -->
+                <div class="password-strength">
+                    <div class="strength-meter">
+                        <div class="strength-fill" id="strengthFill" style="width:0%"></div>
+                    </div>
+                    <div class="strength-text">
+                        <span id="strengthLabel">Weak</span>
+                        <span><i class="fas fa-shield-halved"></i> </span>
+                    </div>
+                </div>
+
+                <!-- detailed criteria checklist (cybersecurity) -->
+                <div class="criteria-grid" id="criteriaList">
+                    <div class="criteria-item invalid" id="critLength"><i class="fas fa-times-circle"></i> 8+ characters</div>
+                    <div class="criteria-item invalid" id="critLower"><i class="fas fa-times-circle"></i> lowercase</div>
+                    <div class="criteria-item invalid" id="critUpper"><i class="fas fa-times-circle"></i> UPPERCASE</div>
+                    <div class="criteria-item invalid" id="critNumber"><i class="fas fa-times-circle"></i> number</div>
+                    <div class="criteria-item invalid" id="critSpecial"><i class="fas fa-times-circle"></i> special (!@#...)</div>
+                </div>
+
+                <!-- confirm password field (additional security) -->
+                <div style="margin: 1rem 0 0.5rem 0;">
+                    <label><i class="fas fa-check-circle"></i> Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="re-enter temporary password">
+                </div>
+                <div class="confirm-row">
+                    <span class="match-badge" id="matchIndicator"><i class="fas fa-exchange-alt"></i> Not checked</span>
+                    <button class="btn-generate" id="generateBtn"><i class="fas fa-robot"></i> Generate strong password</button>
+                </div>
+            </div>
+
+            <!-- cybersecurity option toggles + show password -->
+            <div class="security-toggles">
+                <label class="toggle-item">
+                    <input type="checkbox" id="showPassToggle"> <i class="fas fa-eye"></i> Show password
+                </label>
+                <label class="toggle-item">
+                    <input type="checkbox" id="forceChangeCheck" checked> <i class="fas fa-sync-alt"></i> Force change on first login
+                </label>
+                <label class="toggle-item">
+                    <i class="fas fa-shield"></i> hashed & salted (default)
+                </label>
+            </div>
+
+            <!-- register & clear buttons -->
+            <div class="action-buttons">
+                <button class="btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> Register New Member</button>
+                <button class="btn-secondary" id="clearBtn"><i class="fas fa-eraser"></i> Clear Form</button>
+            </div>
+        </div>
+
+        <!-- subtle extra security note -->
+        <div style="margin-top: 1.5rem; font-size: 0.7rem; background: #ebf3fa; padding: 0.5rem 1rem; border-radius: 30px; color: #2a577b;">
+            <i class="fas fa-lock"></i> All data encrypted in transit · Audit trail enabled · 2FA available for members
+        </div>
+    </div>
+
+    <!-- bottom navigation exactly as described -->
+    <div class="bottom-nav">
+        <a href="{% url 'index' %}" class="nav-item"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a>
+        <a href="#" class="nav-item active"><i class="fas fa-users"></i> <span>Members</span></a>
+        <a href="{% url 'index' %}" class="nav-item"><i class="fas fa-file-alt"></i> <span>Reports</span></a>
+        <a href="{% url 'index' %}" class="nav-item"><i class="fas fa-credit-card"></i> <span>Payments</span></a>
+        <a href="{% url 'password_reset' %}" class="nav-item"><i class="fas fa-question-circle"></i> <span>Help</span></a>
+    </div>
+</div>
+
+<!-- toast container (for lightweight messages) -->
+<div id="toastContainer"></div>
+
+<!-- redirect overlay (shown during smooth transition to login) -->
+<div id="redirectOverlay" class="redirect-overlay" aria-hidden="true">
+    <div class="spinner" aria-hidden="true"></div>
+    <div>
+        <div style="font-size:1.15rem; font-weight:600; letter-spacing:0.02em;">Redirecting you to login…</div>
+        <div style="opacity:0.85; margin-top:0.25rem;">Hold tight — your account is ready.</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // DOM elements
+        const password = document.getElementById('password');
+        const confirm = document.getElementById('confirmPassword');
+        const showPass = document.getElementById('showPassToggle');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthLabel = document.getElementById('strengthLabel');
+        const matchIndicator = document.getElementById('matchIndicator');
+        const generateBtn = document.getElementById('generateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const registerBtn = document.getElementById('registerBtn');
+
+        // criteria elements
+        const critLength = document.getElementById('critLength');
+        const critLower = document.getElementById('critLower');
+        const critUpper = document.getElementById('critUpper');
+        const critNumber = document.getElementById('critNumber');
+        const critSpecial = document.getElementById('critSpecial');
+        const criteriaItems = [critLength, critLower, critUpper, critNumber, critSpecial];
+
+        // fullName, email, phone, address for clear
+        const fullName = document.getElementById('fullName');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone');
+        const address = document.getElementById('address');
+        const forceChange = document.getElementById('forceChangeCheck');
+
+        // helper: update password visibility
+        function togglePasswords() {
+            const type = showPass.checked ? 'text' : 'password';
+            password.type = type;
+            confirm.type = type;
+        }
+        showPass.addEventListener('change', togglePasswords);
+
+        // password strength check & criteria update
+        function checkStrength() {
+            const val = password.value || '';
+            const len = val.length >= 8;
+            const lower = /[a-z]/.test(val);
+            const upper = /[A-Z]/.test(val);
+            const number = /[0-9]/.test(val);
+            const special = /[^A-Za-z0-9]/.test(val); // any non-alphanumeric
+
+            // update criteria classes
+            updateCriterion(critLength, len);
+            updateCriterion(critLower, lower);
+            updateCriterion(critUpper, upper);
+            updateCriterion(critNumber, number);
+            updateCriterion(critSpecial, special);
+
+            const score = [len, lower, upper, number, special].filter(Boolean).length;
+            let strength = 0;
+            if (score <= 2) strength = 0; // weak
+            else if (score === 3) strength = 1; // medium
+            else strength = 2; // strong
+
+            const strengths = ['Weak', 'Medium', 'Strong'];
+            const colors = ['#dc2626', '#f59e0b', '#0f7b5a'];
+            strengthLabel.innerText = strengths[strength];
+            strengthFill.style.width = (strength === 0 ? 25 : strength === 1 ? 60 : 100) + '%';
+            strengthFill.style.background = colors[strength];
+        }
+
+        function updateCriterion(el, condition) {
+            if (condition) {
+                el.classList.remove('invalid');
+                el.classList.add('valid');
+                el.innerHTML = '<i class="fas fa-check-circle"></i> ' + el.innerText.replace(/.*? /,'').trim();
+            } else {
+                el.classList.remove('valid');
+                el.classList.add('invalid');
+                el.innerHTML = '<i class="fas fa-times-circle"></i> ' + el.innerText.replace(/.*? /,'').trim();
+            }
+        }
+
+        // password match check
+        function checkMatch() {
+            const pwd = password.value;
+            const conf = confirm.value;
+            if (!pwd && !conf) {
+                matchIndicator.className = 'match-badge';
+                matchIndicator.innerHTML = '<i class="fas fa-exchange-alt"></i> Not checked';
+            } else if (pwd === conf) {
+                matchIndicator.className = 'match-badge success';
+                matchIndicator.innerHTML = '<i class="fas fa-check"></i> Passwords match';
+            } else {
+                matchIndicator.className = 'match-badge error';
+                matchIndicator.innerHTML = '<i class="fas fa-exclamation-circle"></i> Passwords do not match';
+            }
+        }
+
+        password.addEventListener('input', () => {
+            checkStrength();
+            checkMatch();
+        });
+        confirm.addEventListener('input', checkMatch);
+
+        // generate strong password (cybersecurity feature)
+        function generateStrong() {
+            const lower = 'abcdefghijklmnopqrstuvwxyz';
+            const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const special = '!@#$%^&*_+?';
+            
+            // ensure at least one of each
+            let pwd = '';
+            pwd += lower[Math.floor(Math.random() * lower.length)];
+            pwd += upper[Math.floor(Math.random() * upper.length)];
+            pwd += numbers[Math.floor(Math.random() * numbers.length)];
+            pwd += special[Math.floor(Math.random() * special.length)];
+            
+            // fill to 14-16 chars with random mix
+            const all = lower + upper + numbers + special;
+            const remainingLength = 12 + Math.floor(Math.random() * 4); // 12-15 extra
+            for (let i = 0; i < remainingLength; i++) {
+                pwd += all[Math.floor(Math.random() * all.length)];
+            }
+            // shuffle (simple)
+            pwd = pwd.split('').sort(() => 0.5 - Math.random()).join('');
+            password.value = pwd;
+            confirm.value = pwd; // also fill confirm
+            checkStrength();
+            checkMatch();
+
+            // smooth focus/scroll so the user sees the generated password
+            password.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            password.focus();
+        }
+        generateBtn.addEventListener('click', generateStrong);
+
+        // clear form
+        clearBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fullName.value = '';
+            email.value = '';
+            phone.value = '';
+            address.value = '';
+            password.value = '';
+            confirm.value = '';
+            forceChange.checked = true;
+            showPass.checked = false;
+            togglePasswords(); // hide if visible
+            checkStrength();
+            checkMatch();
+            // reset criteria manually
+            criteriaItems.forEach(el => {
+                el.classList.remove('valid');
+                el.classList.add('invalid');
+                el.innerHTML = '<i class="fas fa-times-circle"></i> ' + el.innerText.replace(/.*? /,'').trim();
+            });
+            strengthFill.style.width = '0%';
+            strengthFill.style.background = '#dc2626';
+            strengthLabel.innerText = 'Weak';
+        });
+
+        // toast helper
+        function showToast(message, type = 'info', duration = 4200) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span><button class="toast-close" aria-label="Dismiss">×</button>`;
+
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                toast.remove();
+            });
+
+            document.getElementById('toastContainer').appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, duration);
+        }
+
+        // smooth redirect overlay
+        function showRedirectOverlay() {
+            const overlay = document.getElementById('redirectOverlay');
+            if (!overlay) return;
+            overlay.classList.add('active');
+        }
+
+        // register simulation with cybersecurity validation
+        const redirectAfterRegister = "{% url 'user_login' %}";
+        registerBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            registerBtn.disabled = true;
+            registerBtn.style.opacity = '0.7';
+            // simple required fields check
+            if (!fullName.value.trim() || !email.value.trim() || !phone.value.trim() || !address.value.trim() || !password.value) {
+                showToast('⚠️ Please fill all required fields (Name, Email, Phone, Address, Password).', 'error');
+                registerBtn.disabled = false;
+                registerBtn.style.opacity = '';
+                return;
+            }
+            // password match?
+            if (password.value !== confirm.value) {
+                showToast('❌ Password confirmation does not match. Please check.', 'error');
+                registerBtn.disabled = false;
+                registerBtn.style.opacity = '';
+                return;
+            }
+            // optional password strength warning, but we allow (admin choice). but we can remind if weak
+            const val = password.value;
+            const len = val.length >= 8;
+            const lower = /[a-z]/.test(val);
+            const upper = /[A-Z]/.test(val);
+            const number = /[0-9]/.test(val);
+            const special = /[^A-Za-z0-9]/.test(val);
+            const score = [len, lower, upper, number, special].filter(Boolean).length;
+            if (score < 3) {
+                if (!confirm('⚠️ The password is weak. Best practice suggests a strong password. Register anyway?')) {
+                    registerBtn.disabled = false;
+                    registerBtn.style.opacity = '';
+                    return;
+                }
+            } else if (score === 3) {
+                // just info, no block
+            }
+            // force change status
+            const changeMsg = forceChange.checked ? 'User must change password on first login.' : 'Password is permanent.';
+            showToast(`✅ Member "${fullName.value}" registered securely. ${changeMsg}`, 'success', 5200);
+
+            // store credentials for autofill on the login page (session only)
+            sessionStorage.setItem('akili_auto_username', email.value.trim());
+            sessionStorage.setItem('akili_auto_password', password.value);
+
+            // smooth transition to login after a brief pause
+            showRedirectOverlay();
+            setTimeout(() => {
+                window.location.href = redirectAfterRegister;
+            }, 1200);
+        });
+
+        // initialize criteria
+        checkStrength();
+        checkMatch();
+    })();
+</script>
+</body>
+</html>

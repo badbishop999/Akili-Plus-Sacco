@@ -1,0 +1,414 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <style>
+        :root {
+            --g1: #0d5c3e;
+            --g2: #1a8a61;
+            --g3: #25c17a;
+            --gold: #f0a500;
+            --slate: #0b2a1e;
+            --mid: #3d7a61;
+            --light: #8dbfa8;
+            --border: #cde8d9;
+        }
+
+        body {
+            background: url("{% static 'images/images/protectionadmin.jpg' %}") no-repeat center center fixed !important;
+            background-size: 100% auto !important;
+            background-position: center center !important;
+            background-attachment: fixed !important;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(13, 92, 62, 0.75), rgba(0, 0, 0, 0.6));
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .login-card {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .sacco-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .sacco-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .sacco-sub {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(240, 165, 0, 0.2);
+            border: 1px solid rgba(240, 165, 0, 0.4);
+            color: var(--gold);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .form-heading {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0 0 0.5rem 0;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-subheading {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.9rem;
+            margin-bottom: 1.8rem;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-group label i {
+            color: var(--g3);
+            font-size: 0.9rem;
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            padding: 0.9rem 1.2rem;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            outline: none;
+            color: #ffffff;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-field:focus {
+            border-color: var(--g3);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 4px rgba(37, 193, 122, 0.15),
+                        0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .field-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: var(--g3);
+        }
+
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .captcha-code {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            border: 2px solid var(--g3);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            color: var(--gold);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px);
+            user-select: none;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .captcha-input {
+            flex: 1;
+        }
+
+        .hint-text {
+            font-size: 0.75rem;
+            margin-left: 4px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.35rem;
+            display: block;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, var(--g2), var(--g3));
+            border: none;
+            border-radius: 40px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(26, 138, 97, 0.35);
+            transition: all 0.25s ease;
+            margin-top: 1.5rem;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, var(--gold), #f59f00);
+            box-shadow: 0 12px 28px rgba(240, 165, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn i {
+            font-size: 1.1rem;
+        }
+
+        .sacco-footer {
+            margin-top: 2rem;
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .sacco-footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sacco-footer a:hover {
+            color: var(--gold);
+        }
+
+        .sacco-footer a i {
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ff8a8a;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message i {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 500px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+            .captcha-container {
+                flex-direction: column;
+            }
+            .captcha-code {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="login-card">
+        <div class="sacco-header">
+            <div class="sacco-title">Akili Plus Sacco</div>
+            <div class="sacco-sub">
+                <i class="fas fa-shield-alt"></i>
+                Admin Portal
+            </div>
+        </div>
+
+        <div class="form-heading">Secure Admin Access</div>
+        <div class="form-subheading">Authorized personnel only. Please verify your identity.</div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form class="login-form" id="loginForm" action="{% url 'admin_login' %}" method="post">
+            {% csrf_token %}
+            
+            <div class="input-group">
+                <label for="adminUsername">
+                    <i class="fas fa-user-shield"></i> Admin Username
+                </label>
+                <input type="text" id="adminUsername" name="username" class="input-field" 
+                       placeholder="Enter admin username" autocomplete="username" required>
+            </div>
+
+            <div class="input-group">
+                <label for="adminPassword">
+                    <i class="fas fa-lock"></i> Admin Password
+                </label>
+                <div class="field-wrapper">
+                    <input type="password" id="adminPassword" name="password" class="input-field" 
+                           placeholder="Enter password" autocomplete="current-password" required>
+                    <button type="button" class="toggle-password" id="togglePassword" tabindex="-1">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="captcha">
+                    <i class="fas fa-shield-alt"></i> Security Verification
+                </label>
+                <div class="captcha-container">
+                    <div class="captcha-code">
+                        {{ captcha_code|default:"XXXXX" }}
+                    </div>
+                    <input type="text" id="captcha" name="captcha" class="input-field captcha-input" 
+                           placeholder="Enter code" autocomplete="off" required>
+                </div>
+                <span class="hint-text"><i class="fas fa-info-circle"></i> Enter the security code shown above</span>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> ACCESS PORTAL
+            </button>
+        </form>
+
+        <div class="sacco-footer">
+            <a href="{% url 'index' %}">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{% url 'password_reset' %}">
+                <i class="fas fa-undo-alt"></i> Reset Password
+            </a>
+            <a href="{% url 'user_login' %}">
+                <i class="fas fa-user"></i> Member Login
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Password visibility toggle
+        (function() {
+            const toggleBtn = document.getElementById('togglePassword');
+            const pwdField = document.getElementById('adminPassword');
+
+            if (toggleBtn && pwdField) {
+                toggleBtn.addEventListener('click', function() {
+                    const type = pwdField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    pwdField.setAttribute('type', type);
+                    this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+                });
+            }
+
+            // Form validation
+            const form = document.getElementById('loginForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const username = document.getElementById('adminUsername').value.trim();
+                    const password = document.getElementById('adminPassword').value.trim();
+                    const captcha = document.getElementById('captcha').value.trim();
+
+                    if (username === '' || password === '' || captcha === '') {
+                        e.preventDefault();
+                        alert('Please fill in all fields: username, password, and security code.');
+                    }
+                });
+            }
+        })();
+    </script>
+{% endblock %}
+
